@@ -4,6 +4,10 @@ const express = require('express')
 // require mongoose
 const mongoose = require('mongoose')
 
+// require express-handlebars
+const exphbs = require('express-handlebars')
+
+// excute express function
 const app = express()
 
 // set a connection to database
@@ -29,7 +33,12 @@ db.once('open', () => {
   console.log('mongodb connected')
 })
 
+app.engine('hbs', exphbs({ 
+  defaultLayout: 'main', 
+  extname: '.hbs'
+}))
 
+app.set('view engine', 'hbs')
 
 
 // define related server variables
