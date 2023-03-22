@@ -10,6 +10,9 @@ const exphbs = require('express-handlebars')
 //require Todo model
 const Todo = require('./models/todo')
 
+// require body-parser
+const bodyParser = require('body-parser')
+
 // excute express function
 const app = express()
 
@@ -43,6 +46,7 @@ app.engine('hbs', exphbs({
 
 app.set('view engine', 'hbs')
 
+app.use(bodyParser.urlencoded({ extended: true }))
 
 // define related server variables
 const port = 3000 
@@ -52,6 +56,17 @@ app.get('/', (req, res) => {
   Todo.find()
     .lean()
     .then(todos => res.render('index', { todos }))
+    .catch(error => console.error(error))
+})
+
+app.get('/todo/new', (req, res) => {
+  res.render('new')
+})
+
+app.post('/todos', (req, res) => {
+  const name = req.body.name
+  return Todo.create({name})
+    .then(() => res.redirect('/'))
     .catch(error => console.error(error))
 })
 
