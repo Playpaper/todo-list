@@ -7,6 +7,9 @@ const mongoose = require('mongoose')
 // require express-handlebars
 const exphbs = require('express-handlebars')
 
+//require Todo model
+const Todo = require('./models/todo')
+
 // excute express function
 const app = express()
 
@@ -46,7 +49,10 @@ const port = 3000
 
 // define route
 app.get('/', (req, res) => {
-  res.send('Hello World !')
+  Todo.find()
+    .lean()
+    .then(todos => res.render('index', { todos }))
+    .catch(error => console.error(error))
 })
 
 // Start and listen the server
