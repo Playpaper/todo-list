@@ -13,6 +13,9 @@ const Todo = require('./models/todo')
 // require body-parser
 const bodyParser = require('body-parser')
 
+// require method-override
+const methodOverride = require('method-override')
+
 // excute express function
 const app = express()
 
@@ -39,6 +42,9 @@ db.once('open', () => {
   console.log('mongodb connected')
 })
 
+// define related server variables
+const port = 3000
+
 app.engine('hbs', exphbs({ 
   defaultLayout: 'main', 
   extname: '.hbs'
@@ -46,10 +52,9 @@ app.engine('hbs', exphbs({
 
 app.set('view engine', 'hbs')
 
+// middleware
 app.use(bodyParser.urlencoded({ extended: true }))
-
-// define related server variables
-const port = 3000 
+app.use(methodOverride('_method'))
 
 // define route
 app.get('/', (req, res) => {
@@ -87,7 +92,7 @@ app.get('/todos/:id/edit', (req, res) => {
     .catch(error => console.error(error))
 })
 
-app.post('/todos/:id/edit', (req, res) => {
+app.put('/todos/:id', (req, res) => {
   const id = req.params.id
   const { name, isDone } = req.body
   return Todo.findById(id)
@@ -100,7 +105,7 @@ app.post('/todos/:id/edit', (req, res) => {
     .catch(error => console.error(error))
 })
 
-app.post('/todos/:id/delete', (req, res) => {
+app.delete('/todos/:id', (req, res) => {
   const id = req.params.id
   return Todo.findById(id)
     .then(todo => todo.remove())
