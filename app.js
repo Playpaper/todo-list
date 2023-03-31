@@ -1,14 +1,8 @@
 // require express from node_modules
 const express = require('express')
 
-// require mongoose
-const mongoose = require('mongoose')
-
 // require express-handlebars
 const exphbs = require('express-handlebars')
-
-//require Todo model
-const Todo = require('./models/todo')
 
 // require body-parser
 const bodyParser = require('body-parser')
@@ -18,29 +12,7 @@ const methodOverride = require('method-override')
 
 // require routes
 const routes = require('./routes')
-
-// set a connection to database
-if(process.env.NODE_ENV !== 'production') {
-  require('dotenv').config()
-} 
-
-mongoose.connect(process.env.MONGODB_URL, { 
-  useNewUrlParser: true, 
-  useUnifiedTopology: true 
-})
-
-// get connect status
-const db = mongoose.connection
-
-// connect error
-db.on('error', () => {
-  console.log('mongodb error!')
-})
-
-// connected
-db.once('open', () => {
-  console.log('mongodb connected')
-})
+require('./config/mongoose')
 
 // define related server variables
 const port = 3000
@@ -58,9 +30,6 @@ app.set('view engine', 'hbs')
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(methodOverride('_method'))
 app.use(routes)
-
-// define route
-
 
 // Start and listen the server
 app.listen(port, () => {
